@@ -12,6 +12,9 @@ eventListeners();
 function eventListeners(){ //Tüm event listener lar
     form.addEventListener("submit", addTodo);
     document.addEventListener("DOMContentLoaded", loadAllTodosToUI);
+    secondCardBody.addEventListener("click", deleteTodo);
+    filter.addEventListener("keyup", filterTodos);
+    clearButton.addEventListener("click", clearAllTodos);
 }
 
 
@@ -70,6 +73,52 @@ function loadAllTodosToUI(){
     todos.forEach(function(todo){
         addTodoToUI(todo);
     })
+}
+
+function deleteTodo(e) {
+    var parent = e.target.parentElement.parentElement;
+    if (e.target.className === "fa fa-remove"){
+        parent.remove();
+        deleteTodoFromStorage(parent.textContent);
+        showAlert("warning", "Başarılı!", "Todo Başarı İle Silindi")
+    }
+}
+
+function deleteTodoFromStorage(deleteTodo) {
+    let todos = getTodosFromStorage();
+
+    todos.forEach(function(todo, index){
+        if(todo == deleteTodo){
+            todos.splice(index, 1);
+        }
+    });        
+
+    localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+function filterTodos(e){
+    const filterValue = e.target.value.toLowerCase();
+    const listItems = document.querySelectorAll(".list-group-item");
+
+    listItems.forEach(function(listItem){
+        const text = listItem.textContent.toLowerCase();
+        if (text.indexOf(filterValue) === -1){
+            listItem.setAttribute("style","display : none !important");
+        }
+        else {
+            listItem.setAttribute("style","display : block");
+        }
+    });
+    //console.log(filterValue);
+}
+
+function clearAllTodos() {
+    if(confirm("Tümünü Silmek İstediğinize Emin Misiniz?")) {
+        while(todoList.firstElementChild != null){
+            todoList.removeChild(todoList.firstElementChild);
+        }
+    }
+    localStorage.removeItem("todos");
 }
 
 function showAlert(type, title, message){
