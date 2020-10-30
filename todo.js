@@ -15,7 +15,13 @@ function eventListeners(){ //Tüm event listener lar
 
 function addTodo(e){
     var newTodo = todoInput.value.trim();
-    addTodoToUI(newTodo);
+    if(newTodo === ""){
+        showAlert("error", "Hata!", "Lütfen bir todo girin!");
+    }
+    else{
+        addTodoToUI(newTodo);
+        showAlert("success", "Harika!", "Todo Başarıyla Eklendi!");
+    }
     e.preventDefault();
 }
 
@@ -36,4 +42,15 @@ function addTodoToUI(newTodo){ //elemanı arayüze ekleme
     //Todo List'e List Item ekleme
     todoList.appendChild(listItem);
     todoInput.value = "";
+}
+
+function showAlert(type, title, message){
+
+    swal({
+        title: title,
+        text: message,
+        icon: type,
+        button: "Tamam",
+    });
+
 }
