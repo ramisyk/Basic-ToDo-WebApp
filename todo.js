@@ -11,7 +11,9 @@ eventListeners();
 
 function eventListeners(){ //Tüm event listener lar
     form.addEventListener("submit", addTodo);
+    document.addEventListener("DOMContentLoaded", loadAllTodosToUI);
 }
+
 
 function addTodo(e){
     var newTodo = todoInput.value.trim();
@@ -20,6 +22,7 @@ function addTodo(e){
     }
     else{
         addTodoToUI(newTodo);
+        addTodoToStorage(newTodo);
         showAlert("success", "Harika!", "Todo Başarıyla Eklendi!");
     }
     e.preventDefault();
@@ -43,14 +46,37 @@ function addTodoToUI(newTodo){ //elemanı arayüze ekleme
     todoList.appendChild(listItem);
     todoInput.value = "";
 }
+function getTodosFromStorage(){ //Storage dan todoları al
+    let todos;
+
+    if(localStorage.getItem("todos")===null){
+        todos = [];
+    }
+    else {
+        todos = JSON.parse(localStorage.getItem("todos"));
+    }
+    return todos;
+}
+function addTodoToStorage(newTodo) {
+    let todos = getTodosFromStorage();
+
+    todos.push(newTodo);
+
+    localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+function loadAllTodosToUI(){
+    let todos = getTodosFromStorage();
+    todos.forEach(function(todo){
+        addTodoToUI(todo);
+    })
+}
 
 function showAlert(type, title, message){
-
     swal({
         title: title,
         text: message,
         icon: type,
         button: "Tamam",
     });
-
 }
